@@ -1,15 +1,23 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path"); // <-- Add this
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
+const videoRoutes = require("./routes/videoRoutes");
 
-const app = express(); // Create app first
+const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve uploaded files
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
 // MongoDB Connection
 mongoose
@@ -23,7 +31,9 @@ mongoose
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/videos", videoRoutes);
 
+// Test Route
 app.get("/", (req, res) => {
   res.json({
     success: true,
